@@ -3,7 +3,8 @@
 var rcon = require('srcds-rcon'),
 	events = require('events'),
 	newLineSplitRegex = /[\n\r]+/,
-	whitespaceSplitRegex = /\s+/;
+	whitespaceSplitRegex = /\s+/,
+	Influx = require('influxdb-nodejs');
 
 /**
  * Usage:
@@ -41,6 +42,30 @@ class Perfmon extends events {
 		for (var i = 0; i < headers.length; i++) {
 			results[headers[i]] = parseFloat(values[i]);
 		}
+
+		console.log(results);
+
+		// Write to influxdb
+		const client = new Influx('http://176.9.70.30:8086/csgo');
+		client.write('perf')
+		.tag({
+			server: 1
+		})
+		.field({
+			CPU: results.CPU,
+			NetIn: results.NetIn,
+			NetOut: results.NetOut,
+			Uptime: results.Uptime,
+			FPS: results.FPS,
+			Players: results.Players,
+			Svms: results.Svms,
+			'+-ms': results['+-ms'],
+			'~tick': results['~tick']
+		}).then(() => {
+		}).catch(err => {
+			console.error(err);
+		});
+
 		this.emit("data", results);
 	}
 

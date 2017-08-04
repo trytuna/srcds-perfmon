@@ -26,6 +26,8 @@
   "homepage": "https://github.com/OpenSourceLAN/srcds-perfmon#readme",
   "dependencies": {
     "express": "^4.13.4",
+    "influx": "^5.0.7",
+    "influxdb-nodejs": "^2.7.3",
     "socket.io": "^1.4.6",
     "srcds-rcon": "^2.2.1"
   }
